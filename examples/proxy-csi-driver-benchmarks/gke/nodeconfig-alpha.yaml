@@ -1,0 +1,23 @@
+apiVersion: scylla.scylladb.com/v1alpha1
+kind: NodeConfig
+metadata:
+  name: basic
+spec:
+  localDiskSetup:
+    raids:
+    - name: nvmes
+      type: RAID0
+      RAID0:
+        devices:
+          nameRegex: ^/dev/nvme\d+n\d+$
+    filesystems:
+    - device: /dev/md/nvmes
+      type: xfs
+    mounts:
+    - device: /dev/md/nvmes
+      mountPoint: /mnt/persistent-volumes
+      unsupportedOptions:
+      - prjquota
+  placement:
+    nodeSelector:
+      kubernetes.io/os: linux

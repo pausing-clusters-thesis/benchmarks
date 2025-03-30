@@ -1,0 +1,27 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: rzetelskik-proxy-csi-driver-benchmarks
+  region: eu-central-1
+  version: "1.31"
+addonsConfig:
+  autoApplyPodIdentityAssociations: true
+addons:
+- name: eks-pod-identity-agent
+  version: latest
+- name: aws-ebs-csi-driver
+  version: latest
+  useDefaultPodIdentityAssociations: true
+availabilityZones:
+- eu-central-1a
+- eu-central-1b
+nodeGroups:
+- name: infra-pool
+  instanceType: i3.xlarge
+  desiredCapacity: 1
+  tags:
+    keep: "48"
+  availabilityZones:
+  - eu-central-1a
+  ssh:
+    allow: true

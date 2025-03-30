@@ -1,0 +1,42 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: rzetelskik-test
+  region: eu-central-1
+  version: "1.31"
+addonsConfig:
+  autoApplyPodIdentityAssociations: true
+addons:
+- name: eks-pod-identity-agent
+  version: latest
+- name: aws-ebs-csi-driver
+  version: latest
+  useDefaultPodIdentityAssociations: true
+availabilityZones:
+- eu-central-1a
+- eu-central-1b
+nodeGroups:
+- name: scylla-pool
+  instanceType: i4i.large
+  desiredCapacity: 3
+  tags:
+    keep: "48"
+  labels:
+    scylla.scylladb.com/node-type: scylla
+  taints:
+    scylla-operator.scylladb.com/dedicated: "scyllaclusters:NoSchedule"
+  kubeletExtraConfig:
+    cpuManagerPolicy: static
+  availabilityZones:
+  - eu-central-1a
+- name: infra-pool
+  instanceType: i3.xlarge
+  desiredCapacity: 1
+  labels:
+    scylla.scylladb.com/node-type: infra
+  tags:
+    keep: "48"
+  availabilityZones:
+  - eu-central-1a
+  ssh:
+    allow: true
